@@ -1,5 +1,6 @@
 package demo.rocketmq.consumer.manage;
 
+import org.apache.rocketmq.client.consumer.LitePullConsumer;
 import org.apache.rocketmq.client.consumer.MQConsumer;
 import org.apache.rocketmq.client.consumer.MQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
@@ -19,6 +20,7 @@ public class MqConsumeManage {
 
     @Autowired
     private MQPushConsumer mqConsumer;
+
 
     private static volatile boolean inited = false;
 

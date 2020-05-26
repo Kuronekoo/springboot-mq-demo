@@ -1,7 +1,6 @@
 package demo.rocketmq.consumer.config;
 import demo.rocketmq.consumer.config.RocketMqProperty;
-import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.client.consumer.MQPushConsumer;
+import org.apache.rocketmq.client.consumer.*;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.MQProducer;
@@ -41,7 +40,7 @@ public class RocketMqConfig {
 
     /**
      * 此处获取的消息消费者未初始化完成：未注册收到消息后的回调方法
-     *
+     * push方式被动获取消息，需要初始化监听器
      * @param rocketMqProperty
      * @return
      * @throws MQClientException
@@ -55,6 +54,18 @@ public class RocketMqConfig {
         pushConsumer.setNamesrvAddr(nameSrvAddrBuilder.toString());
         pushConsumer.subscribe(TOPIC_LOCAL, TAG_LOCAL);
         return pushConsumer;
+    }
+
+    @Bean
+    public LitePullConsumer mqPullConsumer(RocketMqProperty rocketMqProperty) throws MQClientException{
+        DefaultLitePullConsumer pullConsumer =
+                new DefaultLitePullConsumer(rocketMqProperty.getNamespace(), "group2",null);
+        StringBuilder nameSrvAddrBuilder = new StringBuilder();
+        rocketMqProperty.getNameServers().forEach(addr -> nameSrvAddrBuilder.append(addr).append(SPLITTER));
+        pullConsumer.setNamesrvAddr(nameSrvAddrBuilder.toString());
+        pullConsumer.subscribe(TOPIC_LOCAL, TAG_LOCAL);
+        pullConsumer.start();
+        return pullConsumer;
     }
 
 }
